@@ -1,26 +1,115 @@
-using System.Collections.Generic;
 using System;
+using System.Globalization;
 
 namespace ProjetoMarco___C_
 {
-    public class Create : User, ICrud
+    public class Create
     {
-        public Create (int id, string name, Address addressDelivery, 
-        Address addressBilling, string user, string password, DateTime birthDate)
+        public static void CreateUser()
         {
-            base.id = id;
-            base.name = name;
-            base.addressBilling = addressBilling;
-            base.addressDelivery = addressDelivery;
-            base.user = user;
-            base.password = password;
-            base.birthDate = birthDate;
+            var name = ReadName();
+            var username = ReadUser();
+            var password = ReadPassword();
+            var birthdate = ReadBirthdate();
+
+            var deliveryAddress = ReadAddress();
+            var billingAddress = ReadBillingAddress(deliveryAddress);
             
+            var user = new User
+            {
+                id = Database.Users.Count + 1,
+                name = name,
+                user = username,
+                password = password,
+                birthDate = birthdate,
+                deliveryAddress = deliveryAddress,
+                billingAddress = billingAddress
+            };
+
+            Database.Users.Add(user);
         }
-        void ICrud.Create(User user)
+
+        private static Address ReadBillingAddress(Address deliveryAddress)
         {
-            List<User> users = new List<User>();
-            Console.ReadLine();
+            Console.WriteLine("Deseja utilizar como endereço de cobrança o mesmo endereço de entrega?");
+            Console.WriteLine(deliveryAddress);
+
+            System.Console.WriteLine("S - SIM, N - Não");
+            var option = Console.ReadLine();
+
+            if (option == "S")
+                return deliveryAddress;
+            
+            return ReadAddress();
+        }
+
+        public static void CreateSeller()
+        {
+            throw new NotImplementedException();
+        }
+
+        public static void CreateClient()
+        {
+            throw new NotImplementedException();
+        }
+
+        private static string ReadName()
+        {
+            Console.WriteLine("Digite o Nome do Usuário:");
+            return Console.ReadLine();
+        }
+        private static string ReadUser()
+        {
+            Console.WriteLine("Digite o Username:");
+            return Console.ReadLine();
+        }
+        
+        private static string ReadPassword()
+        {
+            Console.WriteLine("Digite a Senha:");
+            return Console.ReadLine();
+        }
+
+        private static DateTime ReadBirthdate()
+        {
+            Console.WriteLine("Digite a Data de Nascimento (dd/mm/aaaa):");
+            var entrada = Console.ReadLine();
+            return Convert.ToDateTime(entrada, new CultureInfo("pt-BR"));
+        }
+
+        private static Address ReadAddress()
+        {
+            Console.WriteLine("Digite a primeira linha do endereço:");
+            var address = Console.ReadLine();
+
+            Console.WriteLine("Digite a segunda linha do endereço:");
+            var secondAddress = Console.ReadLine();
+
+            Console.WriteLine("Digite o número:");
+            var number = Console.ReadLine();
+
+            Console.WriteLine("Digite o CEP do endereço:");
+            var zip = Console.ReadLine();
+
+            Console.WriteLine("Digite a cidade:");
+            var city = Console.ReadLine();
+
+            Console.WriteLine("Digite o estado:");
+            var state = Console.ReadLine();
+
+            Console.WriteLine("Digite o país:");
+            var country = Console.ReadLine();
+
+            return new Address()
+            {
+                address = address,
+                secondAddress = secondAddress, 
+                number = number,
+                zipCode = zip,
+                city = city,
+                state = state, 
+                country = country
+            };
         }
     }
 }
